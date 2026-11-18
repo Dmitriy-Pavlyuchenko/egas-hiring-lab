@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "egas-hiring-lab",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-11-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "send_metrics": false,
+  "build": {"command": "node scripts/build-worker.mjs"},
+  "durable_objects": {"bindings": [{"name": "HIRING_STATE", "class_name": "HiringState"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["HiringState"]}]
+}

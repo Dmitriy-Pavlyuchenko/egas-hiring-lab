@@ -1,0 +1,3 @@
+case-data/*.md -text
+case-data/*.pdf -text
+case-data/*.xlsx -text

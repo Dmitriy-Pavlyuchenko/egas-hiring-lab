@@ -1,0 +1,8 @@
+.env
+runtime/
+node_modules/
+playwright-report/
+test-results/
+.wrangler/
+worker/assets.generated.mjs
+.dev.vars
