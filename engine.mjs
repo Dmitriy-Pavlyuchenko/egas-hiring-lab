@@ -226,7 +226,7 @@ export function createHandler({load,db,tx,password,passwordHash=digest(password?
       if(active?.status!=='pending'||active.created!==reserved.created) fail(409,'Запрос больше не активен.');
       const state=stateOf(find(row.id));
       for(const i of images){
-        run('INSERT INTO image VALUES(?,?,?,?)',i.id,row.id,i.mime,Buffer.alloc(0));
+        run('INSERT INTO image VALUES(?,?,?,zeroblob(0))',i.id,row.id,i.mime);
         putChunks('INSERT INTO image_chunk VALUES(?,?,?)',i.id,i.bytes);
       }
       state.messages.push({id:requestId,person:personId,kind,input:storedInput,reply:answer.text,status:answer.status||null,day:reserved.day,at:date(reserved.created)});
