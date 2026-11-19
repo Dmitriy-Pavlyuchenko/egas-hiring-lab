@@ -96,7 +96,7 @@ export function createHandler({load,db,tx,password,passwordHash=digest(password?
       files:new Map(materials.map(m=>[m.id,exportMaterial(m,m.original?load('case-data/'+m.original):null)]))
     }
   ]));
-  const assets=new Map([['/app.js','text/javascript; charset=utf-8'],['/style.css','text/css; charset=utf-8'],['/','text/html; charset=utf-8']].map(([path,type])=>[path,[type,load('public/'+(path==='/'?'index.html':path.slice(1)))]]));
+  const assets=new Map([['/app.js','text/javascript; charset=utf-8'],['/style.css','text/css; charset=utf-8'],...['cyrillic','latin-ext','latin'].map(subset=>['/inter-'+subset+'.woff2','font/woff2']),['/','text/html; charset=utf-8']].map(([path,type])=>[path,[type,load('public/'+(path==='/'?'index.html':path.slice(1)))]]));
 
   const {query,run,list}=db;
   const find=id=>query('SELECT * FROM invite WHERE id=?',id);

@@ -58,6 +58,25 @@ export async function respond(context, config=process.env) {
     });
     return validatedText(result.message?.content);
   }
+  if (config.AI && !config.CHAT_ADAPTER_URL && context.kind === 'message') {
+    const {person, input, history, news} = context;
+    const role = [person.name, person.role, person.focus, person.objection].filter(Boolean).join('. ');
+    const messages = [
+      {role: 'system', content: 'Ты участник деловой симуляции EGAS. Отвечай кандидату по-русски от первого лица, кратко и по существу. Твоя роль: ' + role + '. Не выдумывай данные объектов, сделки или согласования. Если сведений нет, скажи об этом. Новости кейса: ' + JSON.stringify(news)},
+      ...history.slice(-6).flatMap(item => [
+        {role: 'user', content: String(item.input.text || item.input.description || item.input.product || item.kind).slice(0, 1200)},
+        {role: 'assistant', content: item.reply.slice(0, 1200)}
+      ]),
+      {role: 'user', content: input.text}
+    ];
+    try {
+      const answer = await config.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {messages, max_tokens: 350});
+      return validatedText(answer.response);
+    } catch {
+      console.warn('Workers AI unavailable; using the scenario response.');
+      return baseline;
+    }
+  }
   if(!config.CHAT_ADAPTER_URL) return baseline;
   const token=config.CHAT_ADAPTER_TOKEN;
   const result=await rpc(config.CHAT_ADAPTER_URL,context,token);
